@@ -24,3 +24,13 @@ def test_parse_04():
     assert str(result["individuals"][0].get_death().get_date()) == "15 MAR 2043"
     assert str(result["individuals"][1].get_birth().get_date()) == "MAR 2025"
     assert str(result["individuals"][1].get_death().get_date()) == "MAR 2075"
+
+
+def test_parse_30():
+    # Same as 00 but with 'utf-8-sig' encoding, which should be auto-detected
+    parser = gedcom_parser.GedcomParser("test/samples/30_utf_8_sig_encoding.ged")
+    result = parser.parse()
+    assert len(result["individuals"]) == 1
+    assert result["individuals"][0].get_name() == "John /Doe/"
+    assert str(result["individuals"][0].get_birth().get_date()) == "01 JAN 1900"
+    assert str(result["individuals"][0].get_death().get_date()) == "01 JAN 1970"
