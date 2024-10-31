@@ -1,4 +1,5 @@
 import json
+import chardet
 
 from .elements.rootElements.rootElement import GedcomRootElement
 from .elements.rootElements.family import GedcomFamily
@@ -43,6 +44,18 @@ class GedcomParser:
         :rtype: str
         """
         supported_encodings = ["utf-8", "utf-16", "latin1", "ansi"]
+        with open(self.path, 'rb') as file:
+            raw_data = file.read()
+            result = chardet.detect(raw_data, True)
+            encoding = result['encoding']
+            confidence = result['confidence']
+            if confidence >= 1.0:
+                print(f"Detected encoding: {encoding}")
+                supported_encodings.insert(0, encoding)
+            else:
+                print(f"Can't detect encoding by chardet, most possible is: {encoding} with confidence {confidence}")
+
+
         for encoding in supported_encodings:
             try:
                 with open(self.path, "r", encoding=encoding) as file:
